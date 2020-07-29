@@ -1,48 +1,22 @@
-function deployRedis {
-  oc apply -f https://k8s.io/examples/application/guestbook/redis-master-deployment.yaml
+PROJECT=guestbook-eduardo
 
-  oc apply -f https://k8s.io/examples/application/guestbook/redis-master-service.yaml
+function deployHelm {
+  helm delete guestbook
 
-  oc apply -f https://k8s.io/examples/application/guestbook/redis-slave-deployment.yaml
-
-  oc apply -f https://k8s.io/examples/application/guestbook/redis-slave-service.yaml
+  helm install guestbook \
+    https://github.com/patrocinio/guestbook/blob/helm/helm/guestbook-0.1.0.tgz?raw=true \
+    --namespace $PROJECT -f https://raw.githubusercontent.com/patrocinio/guestbook/helm/helm/guestbook/values-openshift.yaml
 }
 
-function deployBackend {
-  oc delete deploy backend
-  oc apply -f https://raw.githubusercontent.com/patrocinio/guestbook/backend/backend-deployment.yaml
-
-  oc delete svc backend
-  oc apply -f https://raw.githubusercontent.com/patrocinio/guestbook/backend/backend-service.yaml
-}
-
-function exposeBackend {
-  oc delete route backend
+function expose {
   oc expose svc backend
-}
-
-function deployFrontend {
-
-  oc delete deploy frontend
-  oc apply -f https://raw.githubusercontent.com/patrocinio/guestbook/backend/frontend-deployment.yaml
-
-  oc delete svc frontend
-  oc apply -f https://raw.githubusercontent.com/patrocinio/guestbook/backend/frontend-service.yaml
-}
-
-function exposeFrontend {
-  oc delete route frontend
   oc expose svc frontend
 }
 
-#oc new-project guestbook-eduardo
+oc new-project $PROJECT
 
-oc project guestbook-eduardo
+oc project $PROJECT
 
-#deployRedis
+#deployHelm
 
-deployBackend
-exposeBackend
-
-deployFrontend
-#exposeFrontend
+expose
