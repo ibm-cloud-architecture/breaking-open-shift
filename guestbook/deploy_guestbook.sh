@@ -1,7 +1,3 @@
-oc new-project guestbook-eduardo
-
-oc project guestbook-eduardo
-
 function deployRedis {
   oc apply -f https://k8s.io/examples/application/guestbook/redis-master-deployment.yaml
 
@@ -14,10 +10,10 @@ function deployRedis {
 
 function deployBackend {
   oc delete deploy backend
-  oc apply -f https://raw.githubusercontent.com/patrocinio/guestbook/helm/backend-deployment.yaml
+  oc apply -f https://raw.githubusercontent.com/patrocinio/guestbook/backend/backend-deployment.yaml
 
   oc delete svc backend
-  oc apply -f https://raw.githubusercontent.com/patrocinio/guestbook/helm/backend-service.yaml
+  oc apply -f https://raw.githubusercontent.com/patrocinio/guestbook/backend/backend-service.yaml
 }
 
 function exposeBackend {
@@ -28,16 +24,20 @@ function exposeBackend {
 function deployFrontend {
 
   oc delete deploy frontend
-  oc apply -f https://raw.githubusercontent.com/patrocinio/guestbook/helm/frontend-deployment.yaml
+  oc apply -f https://raw.githubusercontent.com/patrocinio/guestbook/backend/frontend-deployment.yaml
 
   oc delete svc frontend
-  oc apply -f https://raw.githubusercontent.com/patrocinio/guestbook/helm/frontend-service.yaml
+  oc apply -f https://raw.githubusercontent.com/patrocinio/guestbook/backend/frontend-service.yaml
 }
 
 function exposeFrontend {
   oc delete route frontend
   oc expose svc frontend
 }
+
+#oc new-project guestbook-eduardo
+
+oc project guestbook-eduardo
 
 #deployRedis
 
