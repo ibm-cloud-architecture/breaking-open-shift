@@ -17,6 +17,6 @@ oc new-project $PROJECT
 
 oc project $PROJECT
 
-#deployHelm
+deployHelm
 
 expose
